@@ -19,5 +19,6 @@ from django.urls import path,include
 
 urlpatterns = [
     path('',include('home_page.urls')),
+    path('start_interview/',include('analysis.urls')),
     path('admin/', admin.site.urls),
 ]

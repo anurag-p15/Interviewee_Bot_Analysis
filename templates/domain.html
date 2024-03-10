@@ -20,25 +20,29 @@
     </section>
     <div class="container-fluid">
         <div class="link-section">
-            <div class="content"><a href="{% url 'home' %}" style="text-decoration: none;"><p>Overview</p> </a>
+            <div class="content"><a href="{% url 'home_page:home' %}" style="text-decoration: none;"><p>Overview</p> </a>
             </div>
             <div class="content_active">
-            <a href="{% url 'domain' %}" style="text-decoration: none;"><p>Domains</p> </a>
+            <a href="{% url 'home_page:domain' %}" style="text-decoration: none;"><p>Domains</p> </a>
             </div>
         </div>
     </div>
         <div class="guide">
             <p class="guide-text">
-                Ready to test yourself or want to challenge yourself to see your preparation?
-                Don’t worry we have got your back with these top domains below with on spot and accurate analysis for your preparation.</p>
-            <p class="guide-text" style="margin-bottom: 0%">    Steps to attempt the quiz: </p>
-                <ul><li>Chose any one of the domain below and click on Start Interview.</li>
-                <li>Then select your duration of your interview.</li>
-                <li>After this a window will appear which asks you to open your Camera and after that you can start answering the questions.</li>
-                <li>Once you click Stop, your answers get evaluated and the bot provides a meaningful and suggestions to improve yourself.</li>
-            </ul>
-            </p>
-            <p class="guide-text">Happy Learning !!</p>
+                Ready to take your interview preparation to the next level? Choose from our top domains below and dive into an immersive experience with on-the-spot and accurate analysis to gauge your readiness.
+                </p>
+                <p class="guide-text" style="margin-bottom: 0%">
+                Follow these simple steps to attempt the quiz:
+                </p>
+                <ul>
+                <li>Choose any one of the domains below and click on "Start Interview."</li>
+                <li>Select the duration of your interview.</li>
+                <li>Allow access to your camera when prompted, and begin answering the questions.</li>
+                <li>Click "Stop" when you're finished, and receive comprehensive evaluation and insightful suggestions from our bot to enhance your performance.</li>
+                </ul>
+                <p class="guide-text">
+                Happy Learning!
+                </p>
         </div>
 
         <!--Field 1-->
@@ -47,17 +51,17 @@
             <div class="row">
                 <div class="col-lg-7">
                     <div class="field-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at orci a turpis vestibulum tincidunt. Sed volutpat 
-                justo eu purus interdum, at egestas metus fermentum. Fusce finibus turpis id orci vehicula, sed facilisis arcu ullamcorper.
-                 Donec nec ultrices lorem. Nullam viverra commodo feugiat. Sed augue mi, egestas a eleifend quis, porta nec enim. Suspendisse potenti. 
-                 Nam aliquet egestas ante, ut volutpat nibh tempor sodales. Sed tempus lectus ipsum.
+                        Looking to sharpen your interview skills in the field of engineering? Our platform offers a tailored experience specifically for 
+                        engineering candidates, providing real-time analysis and feedback to enhance your readiness. With questions from Software Engineering, 
+                        Object Programming, ML and so on along with our comprehensive evaluationand expert suggestions, you'll be well-equipped to ace your 
+                        engineering interviews with confidence. Start your journey towards interview success in the engineering domain today! 
                     </div>
                 </div>
                 <div class="col-lg-5">
                     <div class="field-content">
                         <img src="{% static 'photos/engi-grad.png' %}" class="field-image" alt="Engineering Graduate" />
                         <div class="field-button">
-                            <a href="#" style="text-decoration:none"><p class="field-button-text">Start Interview</p></a>
+                            <a href="{% url 'analysis:start_interview' %}" style="text-decoration:none"><p class="field-button-text">Start Interview</p></a>
                         </div>
                     </div>
                 </div>
@@ -70,17 +74,18 @@
             <div class="row">
                 <div class="col-lg-7">
                     <div class="field-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at orci a turpis vestibulum tincidunt. Sed volutpat 
-                justo eu purus interdum, at egestas metus fermentum. Fusce finibus turpis id orci vehicula, sed facilisis arcu ullamcorper.
-                 Donec nec ultrices lorem. Nullam viverra commodo feugiat. Sed augue mi, egestas a eleifend quis, porta nec enim. Suspendisse potenti. 
-                 Nam aliquet egestas ante, ut volutpat nibh tempor sodales. Sed tempus lectus ipsum.
+                        Looking to refine your interview skills in the realm of Business Administration? Our platform offers a customized experience designed 
+                        specifically for business administration candidates. We provide real-time analysis and feedback to elevate your preparedness. With
+                         questions spanning areas such as strategic management, finance, marketing, and more, coupled with our comprehensive evaluation and 
+                         expert suggestions, you'll be primed to excel in your business administration interviews with confidence. Embark on your path to 
+                         interview success in the business administration domain today!
                     </div>
                 </div>
                 <div class="col-lg-5">
                     <div class="field-content">
                         <img src="{% static 'photos/bba-grad.png' %}" class="field-image" alt="Engineering Graduate" />
                         <div class="field-button">
-                            <a href="#" style="text-decoration:none"><p class="field-button-text">Start Interview</p></a>
+                            <a href="{% url 'analysis:start_interview' %}" style="text-decoration:none"><p class="field-button-text">Start Interview</p></a>
                         </div>
                     </div>
                 </div>
@@ -93,17 +98,18 @@
             <div class="row">
                 <div class="col-lg-7">
                     <div class="field-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at orci a turpis vestibulum tincidunt. Sed volutpat 
-                justo eu purus interdum, at egestas metus fermentum. Fusce finibus turpis id orci vehicula, sed facilisis arcu ullamcorper.
-                 Donec nec ultrices lorem. Nullam viverra commodo feugiat. Sed augue mi, egestas a eleifend quis, porta nec enim. Suspendisse potenti. 
-                 Nam aliquet egestas ante, ut volutpat nibh tempor sodales. Sed tempus lectus ipsum.
+                        Eager to enhance your interview prowess in the dynamic field of finance? Our platform is tailored to cater to finance professionals,
+                         offering real-time analysis and feedback to bolster your readiness. With a curated selection of questions covering topics such as 
+                         financial modeling, investment analysis, risk management, and more, combined with our thorough evaluation and expert recommendations,
+                          you'll be equipped to ace your finance interviews with assurance. Take the first step towards interview triumph in the finance domain
+                           today!
                     </div>
                 </div>
                 <div class="col-lg-5">
                     <div class="field-content">
                         <img src="{% static 'photos/fin-grad.png' %}" class="field-image" alt="Engineering Graduate" />
                         <div class="field-button">
-                            <a href="#" style="text-decoration:none"><p class="field-button-text">Start Interview</p></a>
+                            <a href="{% url 'analysis:start_interview' %}" style="text-decoration:none"><p class="field-button-text">Start Interview</p></a>
                         </div>
                     </div>
                 </div>
@@ -117,17 +123,18 @@
             <div class="row">
                 <div class="col-lg-7">
                     <div class="field-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at orci a turpis vestibulum tincidunt. Sed volutpat 
-                justo eu purus interdum, at egestas metus fermentum. Fusce finibus turpis id orci vehicula, sed facilisis arcu ullamcorper.
-                 Donec nec ultrices lorem. Nullam viverra commodo feugiat. Sed augue mi, egestas a eleifend quis, porta nec enim. Suspendisse potenti. 
-                 Nam aliquet egestas ante, ut volutpat nibh tempor sodales. Sed tempus lectus ipsum.
+                        Looking to elevate your interview skills in the multifaceted realm of management? Our platform is meticulously crafted to cater to
+                         management candidates, delivering real-time analysis and feedback to amplify your preparedness. With an array of questions spanning
+                          strategic management, organizational behavior, leadership, and beyond, complemented by our thorough evaluation and expert guidance,
+                           you'll be poised to excel in your management interviews with conviction. Embark on your journey towards interview success in the 
+                           management domain today!
                     </div>
                 </div>
                 <div class="col-lg-5">
                     <div class="field-content">
                         <img src="{% static 'photos/mba-grad.png' %}" class="field-image" alt="Engineering Graduate" />
                         <div class="field-button">
-                            <a href="#" style="text-decoration:none"><p class="field-button-text">Start Interview</p></a>
+                            <a href="{% url 'analysis:start_interview' %}" style="text-decoration:none"><p class="field-button-text">Start Interview</p></a>
                         </div>
                     </div>
                 </div>
