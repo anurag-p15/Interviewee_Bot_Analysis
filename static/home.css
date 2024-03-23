@@ -1,19 +1,22 @@
 body{
     color:white;
 }
-.logo-navbar{
-position: relative;
-width: 100%;
-height: 142px;
-background: #00A76B;
-box-shadow: 0px 20px 6px rgba(0, 0, 0, 0.25);
+html{
+    overflow-x: hidden;
 }
-.logo-image{
-position: absolute;
-width: 160px;
-height: 128px;
-left: 68px;
-top: 7px;
+.logo-navbar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #00A76B;
+    box-shadow: 0px 20px 6px rgba(0, 0, 0, 0.25);
+}
+
+.logo-image {
+    width: 160px;
+    height: 128px;
+    margin-left: 20px; /* Adjust margin as needed */
+    margin-top: 7px; /* Adjust margin as needed */
 }
 .link-section {
     position: relative;

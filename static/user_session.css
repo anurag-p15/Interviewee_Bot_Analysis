@@ -1,0 +1,150 @@
+.sign-up-form{
+    margin: 5% 22%;
+    width:60%;
+    border-radius: 5vh 5vh;
+    display:block;
+    background-color: rgb(13, 110, 61);
+    padding:5% 5%;
+    color:white;
+}
+html{
+    font-size:18px;
+}
+input{
+    background-color: rgba(0, 164, 79, 0.823);
+    box-shadow:5px 5px solid rgb(29, 29, 29);
+    width:100%;
+	padding:10px;
+	border-radius: 10px;
+	border:1px #ccc;
+}
+.button{
+    margin-top:5%;
+    background: #F77700;
+    width:100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color:white;
+}
+h4{
+    font-size:32px;
+    text-align: center;
+}
+.login-group{
+    text-align: left;
+    margin:2%;
+}
+
+/*User styling */
+.box, .box_selected {
+    width:18%;
+    color: white;
+    border-radius: 2em;
+    margin-top:5%;
+    margin-left:10%;
+    margin-bottom:2%;
+    height:30vh;
+    padding:2%;
+    float:left;
+}
+
+.box {
+    background-color: rgb(37, 37, 37);
+}
+
+.box_selected, .box:hover {
+    background-color: rgb(0, 160, 19);
+}
+
+@media (max-width: 1200px) {
+    .box, .box_selected {
+        margin: 5%;
+        height: 50vh;
+        width: calc(50% - 10%); /* Two boxes per row */
+    }
+}
+
+@media (max-width: 1000px) {
+    .box, .box_selected {
+        margin: 5%;
+        width: calc(100% - 10%); /* Single column layout */
+        height: 20vh;
+    }
+}
+
+@media (max-width: 400px) {
+    .box, .box_selected {
+        height: 40vh;
+        margin: 5%;
+    }
+}
+
+.leadership{
+    width:100%;
+    background-color: #15674c;
+    float:left;
+  }
+.leader{
+    height: fit-content;
+    width:90%;
+    margin: 5% 5%;
+    color:rgb(255, 255, 255);
+    box-shadow: 2px 2px 10px 5px #3f3f3f;
+  }
+  .leader-image{
+    margin-top:2%;
+    width:40%;
+    background-size: contain;
+    float:left;
+  }
+  img{
+    width:100%;
+    height:50vh;
+  }
+  .leader-note{
+    font-size:20px;
+    font-weight: 600;
+    margin-top:2%;
+    margin-left:1%;
+    width:50%;
+    height:100%;
+    float:right;
+  }
+  .leader-note>p,.leader-note>h5{
+    text-align: left;
+  }
+  @media(max-width:768px){
+    .leader-image{
+      width:100%;
+      height:100%;
+      float:top;
+    }
+    .leader-note{
+      margin-left:1%;
+      width:100%;
+      height:100%;
+      float:bottom;
+    }
+  }
+  
+
+  table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 2% 5%;
+  }
+  
+  table, th, td {
+    border: 1px solid black;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #1e8d68;
+    color: white;
+  }

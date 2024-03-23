@@ -21,4 +21,5 @@ urlpatterns = [
     path('',include('home_page.urls')),
     path('start_interview/',include('analysis.urls')),
     path('admin/', admin.site.urls),
+    path('login/',include('user_session.urls')),
 ]

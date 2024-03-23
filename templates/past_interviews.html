@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'user_session.css' %}">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Register</title>
+</head>
+<body style="background-color: #5f5f5f;">
+<!--Navbar-->
+    <div class="logo-navbar">
+        <nav class="navbar navbar-expand-md">
+            <div class="container-fluid all-show">
+                <a href="{% url 'home_page:home' %}"  >  <img src="{% static 'photos/logo.png' %}" class="logo-image" alt="logo" /></a>
+            </div>
+            <section class="wrapper">
+                <nav class="navbar navbar-expand-md">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a href="{% url 'user_session:login' %}" class="nav-link login-link" style="color:white">Login</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle my-account-link" href="#" id="accountsDropdown" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false" style="color:white">My Account</a>
+                                    <ul class="dropdown-menu" style="background-color:#031E1B"  aria-labelledby="accountsDropdown">
+                                        <li><a href="{% url 'user_session:dashboard' %}" class="dropdown-item" style="color:white;text-decoration:none">Dashboard</a></li>
+                                        <li><a href="#" class="dropdown-item" style="color:white;text-decoration:none">Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </section>
+        </nav>
+    </div>
+
+<!--Body-->
+<div>
+ <div class="box" >
+    <div style="text-decoration: none; color: inherit;">
+        <a href="{% url 'user_session:dashboard' %}" style="font-size: 22px; text-decoration:none; border: none; cursor: pointer; color: inherit; text-align: left; display: flex; align-items: center; background-color: transparent;">
+            <div>
+                <h5 style="font-size: 26px; font-weight: 600;">Profile Management</h5>
+                <p style="font-size: 18px; text-align: left;">Manage your profile with ease. Customize and make it yours!</p>
+            </div>
+        </a>
+    </div>
+ </div>
+ <div class="box_selected">
+    <div style="text-decoration: none; color: inherit;">
+        <a href="{% url 'user_session:past_interviews'%}" style="text-decoration:none; font-size: 22px; border: none; cursor: pointer; color: inherit; text-align: left; display: flex; align-items: center; background-color: transparent;">
+            <div>
+                <h5 style="font-size: 26px; font-weight: 600;">Past Interviews</h5>
+                <p style="font-size: 18px; text-align: left;">Get a track of all your past interviews and evaluate your progress</p>
+            </div>
+        </a>
+    </div>
+ </div>
+ <div class="box" >
+    <div style="text-decoration: none; color: inherit;">
+        <a href="#" style="text-decoration:none; font-size: 22px; border: none; cursor: pointer; color: inherit; text-align: left; display: flex; align-items: center; background-color: transparent;">
+            <div>
+                <h5 style="font-size: 26px; font-weight: 600;">Log out</h5>
+                <p style="font-size: 18px; text-align: left;">Terminate your session and saves your progress !!</p>
+            </div>
+        </a>
+    </div>
+ </div>
+</div>
+
+<!--Tabke showing all details-->
+ <div>
+    <table style="color: white; border: 2px solid white;">
+        <thead>
+            <tr style="border: 2px solid white;">
+                <th style="border: 2px solid white;">Interview Domain</th>
+                <th>No.of Questions</th>
+                <th style="border: 2px solid white;">Username</th>
+                <th style="border: 2px solid white;">Review your Analysis</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through the filtered data -->
+            <!-- Replace `filteredData` with your actual data variable -->
+            <!-- Replace `item.category`, `item.score`, and `item.username` with the actual fields in your data -->
+            <!-- Use appropriate styling and structure for your table rows and cells -->
+            <!-- Adjust the `key` attribute if necessary -->
+            <tr style="border: 2px solid white;">
+                <td style="border: 2px solid white;">Domain Name</td>
+                <td>No.of Questions</td>
+                <td style="border: 2px solid white;">Username</td>
+                <td style="border: 2px solid white;">Link</td>
+            </tr>
+        </tbody>
+    </table>
+ </div>
+
+
+<!--Footer-->
+    <div class="footer">
+        <img  class="footer-logo" src="{% static 'photos/logo.png' %}" alt="logo" />
+        <p class="footer-text">@Copyright 2024. All rights reserved.</p>
+    </div>
+
+
+</body>
+</html>

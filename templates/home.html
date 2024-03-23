@@ -11,13 +11,40 @@
     <title>Interviewee Bot Analysis</title>
 </head>
 <body>
-    <section class="logo-navbar">
-        <div class="contents">
-          <div>
-            <img src="{% static 'photos/logo.png' %}"  class="logo-image" alt="logo"/>
-          </div>
-        </div>
-    </section>
+    <div class="logo-navbar">
+        <nav class="navbar navbar-expand-md">
+            <div class="container-fluid all-show">
+                <a href="{% url 'home_page:home' %}"  >  <img src="{% static 'photos/logo.png' %}" class="logo-image" alt="logo" /></a>
+            </div>
+            <section class="wrapper">
+                <nav class="navbar navbar-expand-md">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a href="{% url 'user_session:login' %}" class="nav-link login-link" style="color:white">Login</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle my-account-link" href="#" id="accountsDropdown" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false" style="color:white">My Account</a>
+                                    <ul class="dropdown-menu" style="background-color:#031E1B"  aria-labelledby="accountsDropdown">
+                                        <li><a href="{% url 'user_session:dashboard' %}" class="dropdown-item" style="color:white;text-decoration:none">Dashboard</a></li>
+                                        <li><a href="#" class="dropdown-item" style="color:white;text-decoration:none">Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </section>
+        </nav>
+    </div>
+    
+    
     <div class="container-fluid">
         <div class="link-section">
             <div class="content_active"><a href="{% url 'home_page:home' %}" style="text-decoration: none;"><p>Overview</p></a>
