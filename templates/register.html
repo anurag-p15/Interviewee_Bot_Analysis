@@ -47,28 +47,32 @@
     </div>
 
 <!--Body-->
-  <form>
+  <form method="post" action="{% url 'user_session:register' %}">
     <div class="sign-up-form">
         <h4>Register Yourself on Interviewee Bot Analysis</h4>
+         {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+        {% csrf_token %}
         <div class="login-group">
             <label htmlFor="user" ="label">Enter your Name</label>
-            <input id="name" class type="text" name="name" ="input" placeholder="Enter your username" />
+            <input id="name"  type="text" name="name"  placeholder="Enter your username" />
         </div>
         <div class="login-group">
             <label htmlFor="username" ="label">Email Address</label>
-            <input id="username" class type="text" name="username" ="input" placeholder="Enter your email address" />
+            <input id="username" s type="text" name="username"  placeholder="Enter your email address" />
         </div>
         <div class="login-group">
             <label htmlFor="pass" ="label">Password</label>
-            <input id="pass"  class type="password" name="password" ="input" data-type="password" placeholder="Create your password" />
+            <input id="password"   type="password" name="password"  data-type="password" placeholder="Create your password" />
         </div>
         <div class="login-group">
             <label htmlFor="pass" ="label">Repeat Password</label>
-            <input id="pass" type="password" ="input" data-type="password" placeholder="Repeat your password" />
+            <input id="password_repeat" type="password" data-type="password" placeholder="Repeat your password" />
         </div>
         <div class="login-group">
             <label htmlFor="user" ="label">Tell us about yourself</label>
-            <input id="bio"  class type="text" name="bio" ="input" placeholder="Describe yourself" />
+            <input id="bio"  type="text" name="bio"  placeholder="Describe yourself" />
         </div>
         <div class="group">
             <input type="submit" class="button" value="Sign Up" />
