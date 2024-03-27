@@ -33,7 +33,8 @@
                                         aria-expanded="false" style="color:white">My Account</a>
                                     <ul class="dropdown-menu" style="background-color:#031E1B"  aria-labelledby="accountsDropdown">
                                         <li><a href="{% url 'user_session:dashboard' %}" class="dropdown-item" style="color:white;text-decoration:none">Dashboard</a></li>
-                                        <li><a href="#" class="dropdown-item" style="color:white;text-decoration:none">Logout</a></li>
+                                        <li><a href="{% url 'user_session:logout' %}" class="dropdown-item" style="color:white;text-decoration:none">Logout</a></li>
+
                                     </ul>
                                 </li>
                             </ul>

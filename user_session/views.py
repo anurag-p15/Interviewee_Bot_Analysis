@@ -1,8 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from pymongo import MongoClient
 from django.contrib.auth.hashers import make_password,check_password
 from .models import User
+from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login as auth_login
 
 
@@ -42,31 +44,52 @@ def login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        # Retrieve user from the database using username
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            # User does not exist
             error_message = 'Invalid username or password'
             return render(request, 'login.html', {'error': error_message})
 
-        # Check if the entered password matches the one stored in the database
         if check_password(password, user.password):
-            # Passwords match, authenticate user and redirect to dashboard
-          #  auth_login(request, user)
-            message='Hello eRROR HERE !!'
-            # No need to manually set last_login for MongoDB user model
-            request.session['user_id'] = user.id
-            return render(request, 'dashboard.html', {'user_data': user})
+            # Store the entire user object in the session
+            request.session['user'] = {
+                'name': user.name,
+                'username': user.username,
+                'bio': user.bio  # Add more fields as needed
+            }
+            # Redirect to dashboard on successful login
+            return redirect('user_session:dashboard')
         else:
-            # Passwords don't match
             error_message = 'Invalid username or password'
             return render(request, 'login.html', {'error': error_message})
     else:
         return render(request, 'login.html')
-    
+
 def dashboard(request):
-    return render(request,'dashboard.html')
+    user_data = request.session.get('user')
+    print(user_data)
+    if user_data:
+        # Pass user_data to the template
+        return render(request, 'dashboard.html', {'user_data': user_data})
+    else:
+        # Redirect to login page if user not logged in
+        messages.error(request, 'Please login to access the dashboard.')
+        return redirect('user_session:login')
+
+
+def logout_view(request):
+    # Clear all session-stored variables
+    request.session.flush()
+    # Alternatively, if you want to clear specific session variables, you can use:
+    # for key in list(request.session.keys()):
+    #     del request.session[key]
+
+    # Logout the user (optional, if you're using Django authentication system)
+    logout(request)
+    
+    # Redirect to the login page
+    return redirect('user_session:login')
+
 
 def past_interviews(request):
     return render(request,'past_interviews.html')
