@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'home_page',
     'analysis',
     'user_session',
+    'djongo',
 ]
 
 MIDDLEWARE = [
