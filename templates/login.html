@@ -34,7 +34,9 @@
                                     <a class="nav-link dropdown-toggle my-account-link" href="#" id="accountsDropdown" role="button" data-bs-toggle="dropdown"
                                         aria-expanded="false" style="color:white">My Account</a>
                                     <ul class="dropdown-menu" style="background-color:#031E1B"  aria-labelledby="accountsDropdown">
-                                        <li><a href="{% url 'user_session:dashboard' %}" class="dropdown-item" style="color:white;text-decoration:none">Dashboard</a></li>
+                                        {% if request.user.is_authenticated %}
+                                        <li><a href="{% url 'user_session:dashboard' user_id=request.user.id %}" class="dropdown-item" style="color:white;text-decoration:none">Dashboard</a></li>
+                                    {% endif %} 
                                         <li><a href="#" class="dropdown-item" style="color:white;text-decoration:none">Logout</a></li>
                                     </ul>
                                 </li>
@@ -49,23 +51,24 @@
 <!--Body-->
   <div class="sign-up-form">
     <h4>Login</h4>
-    <form>
-    <div class="login-group">
-        <label htmlFor="user" class="label">Enter your Name</label><br/>
-        <input id="name" type="text" class="input" class placeholder="Enter your name" name="name"/>
-    </div>
-    <div class="login-group">
-        <label htmlFor="pass" class="label">Email Address</label><br/>
-        <input id="username" name="username" type="text" class="input" class placeholder="Enter your email address" />
-    </div>
-    <div class="login-group">
-        <label htmlFor="pass" class="label">Password</label><br/>
-        <input id="pass" type="password" class="input" data-type="password" name="password" class placeholder="Enter your password" />
-    </div>
-    <div class="group">
-        <input type="submit" class="button" value="Sign Up" />
-    </div>
+    <form method="post" action="{% url 'user_session:login' %}">
+        {% csrf_token %}
+        {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+        <div class="login-group">
+            <label for="username" class="label">Email Address</label><br/>
+            <input id="username" name="username" type="text" class="input" placeholder="Enter your email address" />
+        </div>
+        <div class="login-group">
+            <label for="password" class="label">Password</label><br/>
+            <input id="password" type="password" class="input" name="password" placeholder="Enter your password" />
+        </div>
+        <div class="group">
+            <input type="submit" class="button" value="Login" />
+        </div>
     </form>
+    
   </div>
    <p style="display: flex; justify-content: center; margin-bottom: 2%;">
     <a href="{% url 'user_session:register' %}" style="font-size: 22px; text-decoration: none; color:white; border: none; cursor: pointer; text-align: left; display: flex; align-items: center;">

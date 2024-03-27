@@ -89,13 +89,16 @@
             <div class="leader-image">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/1024px-User_font_awesome.svg.png" alt="leader name"/>
             </div>
+            {% if user_data %}
             <div class="leader-note">
                 <div style="border-bottom: 3px solid rgb(5, 112, 78);">
-                    <h5><b>Name:</b>  {uname}</h5>
+                    <h5><b>Name:</b> {{ user_data.name }}</h5>
                 </div>
-                <div><h5><b>Email Id:</b>  {uusername} </h5></div>
-                <p>Bio: {bio_1}</p>
+                <div><h5><b>Email Id:</b> {{ user_data.username }}</h5></div>
+                <p>Bio: {{ user_data.bio }}</p>
             </div>
+            {% endif %}
+                   
         </div>
     </div>
 <!--Footer-->
