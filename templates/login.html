@@ -34,9 +34,7 @@
                                     <a class="nav-link dropdown-toggle my-account-link" href="#" id="accountsDropdown" role="button" data-bs-toggle="dropdown"
                                         aria-expanded="false" style="color:white">My Account</a>
                                     <ul class="dropdown-menu" style="background-color:#031E1B"  aria-labelledby="accountsDropdown">
-                                        {% if request.user.is_authenticated %}
-                                        <li><a href="{% url 'user_session:dashboard' user_id=request.user.id %}" class="dropdown-item" style="color:white;text-decoration:none">Dashboard</a></li>
-                                    {% endif %} 
+                                        <li><a href="{% url 'user_session:dashboard' %}" class="dropdown-item" style="color:white;text-decoration:none">Dashboard</a></li>
                                         <li><a href="#" class="dropdown-item" style="color:white;text-decoration:none">Logout</a></li>
                                     </ul>
                                 </li>
