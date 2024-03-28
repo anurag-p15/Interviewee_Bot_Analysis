@@ -102,7 +102,14 @@ def logout_view(request):
 
 
 def past_interviews(request):
-    return render(request,'past_interviews.html')
+    user_data = request.session.get('user')
+    print(user_data)
+    if user_data:
+        return render(request,'past_interviews.html')
+    else:
+        # Redirect to login page if user not logged in
+        messages.error(request, 'Please login to access the dashboard.')
+        return redirect('user_session:login')
 
 
 
