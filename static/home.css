@@ -9,14 +9,13 @@ html{
     width: 100%;
     height: 100%;
     background: #00A76B;
-    box-shadow: 0px 20px 6px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 10px 6px rgba(0, 0, 0, 0.25);
 }
 
 .logo-image {
-    width: 160px;
-    height: 128px;
-    margin-left: 20px; /* Adjust margin as needed */
-    margin-top: 7px; /* Adjust margin as needed */
+    width: 100px;
+    height: 60px;
+    margin:2%;
 }
 .link-section {
     position: relative;
@@ -84,12 +83,13 @@ html{
     font-family: 'Inter';
     font-style: normal;
     font-weight: 700;
-    font-size: 32px;
+    font-size: 24px;
     line-height: 39px;
     display: flex;
     align-items: center;
     color: #FFFFFF;
-    padding: 2% 2%;
+    padding: 2% ;
+    padding-top:0%;
     }
 
  /*Page 1*/

@@ -16,7 +16,7 @@
     <div class="logo-navbar">
         <nav class="navbar navbar-expand-md">
             <div class="container-fluid all-show">
-                <a href="{% url 'home_page:home' %}"  >  <img src="{% static 'photos/logo.png' %}" class="logo-image" alt="logo" /></a>
+                <a href="{% url 'home_page:home' %}"  >  <img src="{% static 'photos/logo_1.png' %}" class="logo-image" alt="logo" /></a>
             </div>
             <section class="wrapper">
                 <nav class="navbar navbar-expand-md">
@@ -71,7 +71,7 @@
  </div>
  <div class="box" >
     <div style="text-decoration: none; color: inherit;">
-        <a href="#" style="text-decoration:none; font-size: 22px; border: none; cursor: pointer; color: inherit; text-align: left; display: flex; align-items: center; background-color: transparent;">
+        <a href="{% url 'user_session:logout' %}" style="text-decoration:none; font-size: 22px; border: none; cursor: pointer; color: inherit; text-align: left; display: flex; align-items: center; background-color: transparent;">
             <div>
                 <h5 style="font-size: 26px; font-weight: 600;">Log out</h5>
                 <p style="font-size: 18px; text-align: left;">Terminate your session and saves your progress !!</p>
