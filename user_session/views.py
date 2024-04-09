@@ -178,6 +178,11 @@ class VideoAnalyzer:
         self.analysis_duration = 20
         self.latest_analysis_results = []
         self.questions = self.load_questions_from_csv('questions_dataset.csv')
+        self.resolution = (1300,1300)  # Default resolution
+
+    def set_resolution(self, resolution):
+        self.resolution = resolution
+
         
     def load_questions_from_csv(self,csv_file):
         questions=[]
@@ -241,8 +246,10 @@ class VideoAnalyzer:
         return audio_sentiment
     
     
-    def analyze_video(self):
+    def analyze_video(self): 
         self.video_capture = cv2.VideoCapture(0)
+        self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[0])
+        self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
 
         question=random.choice(self.questions)
         audio_thread=Thread(target=self.analyze_audio)
@@ -266,11 +273,27 @@ class VideoAnalyzer:
 
                 # Draw the white rectangle background
 
-                cv2.putText(frame, question, bottom_left_corner, font, font_scale, (255, 255, 255), font_thickness, cv2.LINE_AA)
+                # Define background color and text color
+                background_color = (0, 119, 204)  # BGR color for #F77700 (orange)
+                text_color = (0, 0, 0)  # Black
+
+                # Calculate text size
+                text_size = cv2.getTextSize(question, font, font_scale, font_thickness)[0]
+
+                # Calculate background rectangle position and size
+                background_position = (bottom_left_corner[0], bottom_left_corner[1] - text_size[1] - 5)
+                background_size = (1300, text_size[1] + 80)  # Add some padding
+
+                # Draw filled rectangle as background
+                cv2.rectangle(frame, background_position, (background_position[0] + background_size[0], background_position[1] + background_size[1]), background_color, -1)
+
+                # Draw text on top of background rectangle
+                cv2.putText(frame, question, (bottom_left_corner[0], bottom_left_corner[1] - 5), font, font_scale, text_color, font_thickness, cv2.LINE_AA)
+
 
                 button_margin = 10
                 button_height = 30
-                button_width = 120
+                button_width = 150
                 button_color = (255, 255, 255)
                 button_text_color = (0, 0, 0)
 
