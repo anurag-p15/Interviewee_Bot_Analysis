@@ -186,7 +186,8 @@ class VideoAnalyzer:
                 elif (counter >= num_questions_to_show):
                     self.recording = False
                     break
-                elif (key == ord('n') and counter < num_questions_to_show):  # Next question if 'n' key is pressed
+                elif (key == ord('n') and counter < num_questions_to_show):
+                    counter += 1  # Next question if 'n' key is pressed
                     continue
                 result = self.analyze_frame(frame)
                 audio_thread = Thread(target=self.analyze_audio)
