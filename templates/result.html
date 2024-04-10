@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results</title>
+</head>
+<body>
+    <h2>Average Emotion Result</h2>
+    <ul>
+        {% for emotion, score in average_emotion.items %}
+            <li>{{ emotion|title }}: {{ score }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Audio Sentiment Result</h2>
+    <ul>
+        {% for sentiment, value in audio_sentiment.items %}
+            <li>{{ sentiment|title }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

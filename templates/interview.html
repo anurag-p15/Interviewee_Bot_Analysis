@@ -89,27 +89,28 @@
         </nav>
     </div>
     <div class='container'>
-        <form id="analysisForm">
+        <form id="analysisForm" action="{% url 'user_session:start_analysis_view' %}" method="post">
+            {% csrf_token %}
             <h2 style='text-align: center;font-size:26px'>Select your Domain and start your Interview !!</h2>
             <label for="domain">Domain:</label>
             <select id="domain" name="domain">
                 <option value="null">----</option>
-                <option value="engineering">Engineering</option>
-                <option value="bba">BBA</option>
-                <option value="finance">Finance</option>
-                <option value="management">Management</option>
+                <option value="Software Engineering">Software Engineering</option>
+                <option value="BBA">BBA</option>
+                <option value="Finance">Finance</option>
             </select>
         
             <label for="numQuestions">Number of Questions:</label>
             <select id="numQuestions" name="numQuestions">
                 <option value="0">----</option>
+                <option value="3">3</option>
                 <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
+                <option value="7">7</option>
                 <!-- Add more options as needed -->
             </select>
-            <button type="button" onclick="startAnalysis()">Start Analysis</button>
+            <button type="submit">Start Analysis</button>
         </form>
+        
 
 
         <div id="result">
@@ -125,7 +126,7 @@
 
 
 
-    <script>
+    {% comment %} <script>
         function startAnalysis() {
             fetch('{% url "user_session:check_login_status" %}')
                 .then(response => {
@@ -179,7 +180,7 @@
             });
         });
 
-    </script>
+    </script> {% endcomment %}
     
     
 </body>
