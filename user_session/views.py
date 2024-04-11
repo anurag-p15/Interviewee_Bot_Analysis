@@ -24,7 +24,8 @@ class VideoAnalyzer:
         self.recording = False
         self.video_capture = None
         self.latest_analysis_results = []
-        self.resolution = (1300, 1300)  # Default resolution
+        self.resolution = (1300, 1300)
+        self.audio_thread=None
 
     def set_resolution(self, resolution):
         self.resolution = resolution
@@ -88,7 +89,7 @@ class VideoAnalyzer:
             print("Clearing Background noise...")
             recognizer.adjust_for_ambient_noise(source,duration=1)
             print("Waiting for user's message...")
-            record_audio=recognizer.listen(source)
+            record_audio=recognizer.listen(source,timeout=60)
             print("Done recording..")
             
         try:
@@ -116,10 +117,13 @@ class VideoAnalyzer:
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[0])
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
         counter=0
+        question=random.choice(questions)
+        self.audio_thread=Thread(target=self.analyze_audio)
+        self.audio_thread.start()
         
         
         while self.recording:
-            question=random.choice(questions)
+            
             ret, frame = self.video_capture.read()
 
             if ret:
@@ -176,7 +180,7 @@ class VideoAnalyzer:
                
                 # Display the frame in a window
                 cv2.imshow('Video Feed', frame)
-                key = cv2.waitKey(50)
+                key = cv2.waitKey(5)
 
                 if key == ord('q'):  # Quit if 'q' key is pressed
                     break
@@ -188,11 +192,15 @@ class VideoAnalyzer:
                     break
                 elif (key == ord('n') and counter < num_questions_to_show):
                     counter += 1  # Next question if 'n' key is pressed
+                    question = random.choice(questions)
+                    if self.audio_thread and self.audio_thread.is_alive():
+                        self.audio_thread.join()  # Wait for the previous audio analysis to finish
+                    self.audio_thread = Thread(target=self.analyze_audio)
+                    self.audio_thread.start()
                     continue
+                
                 result = self.analyze_frame(frame)
-                audio_thread = Thread(target=self.analyze_audio)
-                audio_thread.start()
-                audio_thread.join()
+                
                 # Store the result at 5-second intervals
                 self.latest_analysis_results.append(result)
 

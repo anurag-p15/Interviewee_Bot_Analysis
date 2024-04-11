@@ -124,63 +124,6 @@
         <p class="footer-text">@Copyright 2024. All rights reserved.</p>
     </div>
 
-
-
-    {% comment %} <script>
-        function startAnalysis() {
-            fetch('{% url "user_session:check_login_status" %}')
-                .then(response => {
-                    if (response.redirected) {
-                        window.location.href = response.url; // Redirect to login page
-                    } else {
-                        // User is logged in, proceed with starting the analysis
-                        initiateAnalysis();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('result').innerText = `Error: ${error.message}`;
-                });
-        }
-    
-        function initiateAnalysis() {
-            // Start the analysis using AJAX
-            fetch('{% url "user_session:start_analysis_view" %}', { method: 'POST' })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-    
-                    // Analysis started, wait for it to complete
-                    return fetch('{% url "user_session:check_analysis_result" %}')
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json(); // Parse the response as JSON
-                })
-                .then(result => {
-                    // Update the result div with the final analysis result
-                    document.getElementById('result').innerHTML = result.html_result;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('result').innerText = `Error: ${error.message}`;
-                });
-        }
-
-        window.addEventListener('beforeunload', function (e) {
-            // Send an AJAX request to clear analysis results
-            fetch('/{% url "user_session:clear_analysis_results" %}/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'  // Ensure to include CSRF token
-                }
-            });
-        });
-
-    </script> {% endcomment %}
     
     
 </body>
