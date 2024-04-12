@@ -24,6 +24,9 @@ class VideoAnalyzer:
         self.recording = False
         self.video_capture = None
         self.latest_analysis_results = []
+        self.questions = []
+        self.user_answers = []
+        self.expected_answers = []
         self.resolution = (1300, 1300)
         self.audio_thread=None
 
@@ -38,7 +41,8 @@ class VideoAnalyzer:
                 for row in reader:
                     question_data = {
                         'Domain': row['Domain'],
-                        'Question': row['Question']
+                        'Question': row['Question'],
+                        'Expected Answer': row['Expected Answer']
                     }
                     questions.append(question_data)
         except Exception as e:
@@ -53,6 +57,9 @@ class VideoAnalyzer:
     def start_analysis(self, domain,num_questions_to_show):
         print("Starting analysis for domain:", domain)  # Debug statement
         self.recording = True
+        self.questions = []
+        self.user_answers = []
+        self.expected_answers = []
         self.questions = self.load_questions_from_csv('questions_dataset.csv')
         filtered_questions = self.filter_questions_by_domain(domain)
         threading.Thread(target=self.analyze_video, args=(filtered_questions, num_questions_to_show)).start()
@@ -105,7 +112,7 @@ class VideoAnalyzer:
         analyzer=SentimentIntensityAnalyzer()
         audio_sentiment=analyzer.polarity_scores(text)
         print("Vader Sentiment Scores: ",audio_sentiment)
-        return audio_sentiment
+        return sentence
     
     
     def analyze_video(self,questions,num_questions_to_show): 
@@ -113,6 +120,11 @@ class VideoAnalyzer:
             print("No questions available for analysis.")
             return
         
+        
+        self.questions = []
+        self.user_answers = []
+        self.expected_answers = []
+    
         self.video_capture = cv2.VideoCapture(0)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[0])
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
@@ -121,10 +133,14 @@ class VideoAnalyzer:
         self.audio_thread=Thread(target=self.analyze_audio)
         self.audio_thread.start()
         
+        # Initialize a list to store user answers
+        user_answers = []
         
         while self.recording:
             
             ret, frame = self.video_capture.read()
+            
+            self.questions.append(question['Question'])
 
             if ret:
                 font=cv2.FONT_HERSHEY_COMPLEX
@@ -132,7 +148,7 @@ class VideoAnalyzer:
                 bottom_left_corner=(10, frame.shape[0] - 10)
                 font_scale = 1
                 font_thickness = 2
-                
+            
                 
                 # hello_message = "Hello!"
                 text_size = cv2.getTextSize(str(question), font, font_scale, font_thickness)[0]
@@ -193,16 +209,16 @@ class VideoAnalyzer:
                 elif (key == ord('n') and counter < num_questions_to_show):
                     counter += 1  # Next question if 'n' key is pressed
                     question = random.choice(questions)
-                    if self.audio_thread and self.audio_thread.is_alive():
-                        self.audio_thread.join()  # Wait for the previous audio analysis to finish
+                # Obtain user's answer through audio
+                    user_answer = self.analyze_audio()
+                    if user_answer is not None:
+                        user_answers.append(user_answer)
+                    # Append the expected answer for the current question
+                    self.expected_answers.append(question['Expected Answer'])
+                    # Start a new audio analysis thread for the next question
                     self.audio_thread = Thread(target=self.analyze_audio)
                     self.audio_thread.start()
-                    continue
-                
-                result = self.analyze_frame(frame)
-                
-                # Store the result at 5-second intervals
-                self.latest_analysis_results.append(result)
+        self.user_answers = user_answers
 
         self.video_capture.release()
         cv2.destroyAllWindows()
@@ -212,6 +228,13 @@ class VideoAnalyzer:
         print("Interview Analysis Results:")
         for idx, result in enumerate(self.latest_analysis_results, start=1):
             print(f"Result {idx}: {result}")
+        
+        print("Questions Asked and Answers:")
+        for idx, (self.question, self.user_answer, self.expected_answer) in enumerate(zip(self.questions, self.user_answers, self.expected_answers), start=1):
+            print(f"Question {idx}:")
+            print(f"Question: {self.question}")
+            print(f"User's Answer: {self.user_answer}")
+            print(f"Expected Answer: {self.expected_answer}")
 
     def get_average_emotion(self):
         if not self.latest_analysis_results:
