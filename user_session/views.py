@@ -54,6 +54,7 @@ class VideoAnalyzer:
         filtered_questions = [question for question in self.questions if question['Domain'] == domain]
         return filtered_questions 
     
+    
     def start_analysis(self, domain,num_questions_to_show):
         print("Starting analysis for domain:", domain)  # Debug statement
         self.recording = True
@@ -88,7 +89,7 @@ class VideoAnalyzer:
 
 
 
-    def analyze_audio(self):
+    def analyze_audio(self,timeout=30):
         recognizer = sr.Recognizer()
         text=""
         
@@ -112,6 +113,7 @@ class VideoAnalyzer:
         analyzer=SentimentIntensityAnalyzer()
         audio_sentiment=analyzer.polarity_scores(text)
         print("Vader Sentiment Scores: ",audio_sentiment)
+        self.user_answers.append(text)
         return sentence
     
     
@@ -121,15 +123,17 @@ class VideoAnalyzer:
             return
         
         
-        self.questions = []
-        self.user_answers = []
-        self.expected_answers = []
+        self.questions.clear()
+        self.user_answers.clear()
+        self.expected_answers.clear()
+        self.latest_analysis_results.clear()
     
         self.video_capture = cv2.VideoCapture(0)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[0])
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
         counter=0
         question=random.choice(questions)
+        self.questions.append(question['Question'])
         self.audio_thread=Thread(target=self.analyze_audio)
         self.audio_thread.start()
         
@@ -140,7 +144,7 @@ class VideoAnalyzer:
             
             ret, frame = self.video_capture.read()
             
-            self.questions.append(question['Question'])
+            # self.questions.append(question['Question'])
 
             if ret:
                 font=cv2.FONT_HERSHEY_COMPLEX
@@ -207,19 +211,22 @@ class VideoAnalyzer:
                     self.recording = False
                     break
                 elif (key == ord('n') and counter < num_questions_to_show):
-                    counter += 1  # Next question if 'n' key is pressed
+                    counter += 1
                     question = random.choice(questions)
-                # Obtain user's answer through audio
+                    self.questions.append(question['Question'])
+                    self.expected_answers.append(question['Expected Answer'])
                     user_answer = self.analyze_audio()
                     if user_answer is not None:
                         user_answers.append(user_answer)
-                    # Append the expected answer for the current question
-                    self.expected_answers.append(question['Expected Answer'])
-                    # Start a new audio analysis thread for the next question
+                # Start a new audio analysis thread for the next question
                     self.audio_thread = Thread(target=self.analyze_audio)
                     self.audio_thread.start()
-        self.user_answers = user_answers
-
+                
+                # Analyze frame and append results to latest_analysis_results
+                analysis_result = self.analyze_frame(frame)
+                if analysis_result is not None:
+                    self.latest_analysis_results.append(analysis_result)
+                    
         self.video_capture.release()
         cv2.destroyAllWindows()
         self.print_results()
@@ -228,13 +235,14 @@ class VideoAnalyzer:
         print("Interview Analysis Results:")
         for idx, result in enumerate(self.latest_analysis_results, start=1):
             print(f"Result {idx}: {result}")
-        
+    
         print("Questions Asked and Answers:")
-        for idx, (self.question, self.user_answer, self.expected_answer) in enumerate(zip(self.questions, self.user_answers, self.expected_answers), start=1):
+        for idx, (question, user_answer, expected_answer) in enumerate(zip(self.questions, self.user_answers, self.expected_answers), start=1):
             print(f"Question {idx}:")
-            print(f"Question: {self.question}")
-            print(f"User's Answer: {self.user_answer}")
-            print(f"Expected Answer: {self.expected_answer}")
+            print(f"Question: {question}")
+            print(f"User's Answer: {user_answer}")
+            print(f"Expected Answer: {expected_answer}")
+
 
     def get_average_emotion(self):
         if not self.latest_analysis_results:
