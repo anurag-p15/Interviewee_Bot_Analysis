@@ -86,7 +86,7 @@ class VideoAnalyzer:
             # Return the analysis result
             return result 
         
-
+        
 
 
     def analyze_audio(self,timeout=30):
@@ -133,7 +133,10 @@ class VideoAnalyzer:
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
         counter=0
         question=random.choice(questions)
+        question_text = question['Question']
         self.questions.append(question['Question'])
+        expected_answer = self.get_expected_answer(question_text)  # Pass question text as argument
+        self.expected_answers.append(expected_answer)
         self.audio_thread=Thread(target=self.analyze_audio)
         self.audio_thread.start()
         
@@ -213,8 +216,10 @@ class VideoAnalyzer:
                 elif (key == ord('n') and counter < num_questions_to_show):
                     counter += 1
                     question = random.choice(questions)
-                    self.questions.append(question['Question'])
-                    self.expected_answers.append(question['Expected Answer'])
+                    question_text = question['Question']
+                    self.questions.append(question_text)
+                    expected_answer = self.get_expected_answer(question_text)  # Pass question text as argument
+                    self.expected_answers.append(expected_answer)
                     user_answer = self.analyze_audio()
                     if user_answer is not None:
                         user_answers.append(user_answer)
@@ -230,6 +235,27 @@ class VideoAnalyzer:
         self.video_capture.release()
         cv2.destroyAllWindows()
         self.print_results()
+        
+        
+        
+    def get_expected_answer(self, question_text):
+        expected_answer = None
+        try:
+            with open('questions_dataset.csv', newline='', encoding='utf-8') as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    csv_question_text = row['Question'].strip().lower()  # Strip whitespace and convert to lowercase
+                    #print("Question from CSV:", csv_question_text)  # Debug print
+                    #print("Question passed as argument:", question_text.strip().lower())  # Debug print
+                    if csv_question_text == question_text.strip().lower():
+                        expected_answer = row['Expected Answer']
+                        break
+        except Exception as e:
+            print(f"Error fetching expected answer from CSV: {e}")
+        return expected_answer
+
+
+        
         
     def print_results(self):
         print("Interview Analysis Results:")
