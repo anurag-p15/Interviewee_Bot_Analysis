@@ -1,0 +1,242 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Confidence Score</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Ensure the page takes at least the full viewport height */
+            background-color: #f0f0f0;
+        }
+
+        #header {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #charts-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the start of the container */
+            gap: 10px; /* Reduced gap between charts */
+            margin: 0; /* Remove all margins */
+            padding-left: 10px; /* Add padding to the left */
+            overflow-x: auto; /* Add horizontal scroll if charts overflow */
+        }
+
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interview Analysis Results</h1>
+    <table>
+        <tr>
+            <th>Index</th>
+            <th>Question</th>
+            <th>User's Answer</th>
+            <th>Expected Answer</th>
+        </tr>
+        {% for result in analysis_results %}
+        <tr>
+            <td>{{ result.index }}</td>
+            <td>{{ result.question }}</td>
+            <td>{{ result.user_answer }}</td>
+            <td>{{ result.expected_answer }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div id="header">Final Confidence Score: 88.8%</div>
+    <div id="charts-container">
+        <canvas id="chart1" width="250" height="250"></canvas>
+        <canvas id="chart2" width="250" height="250"></canvas>
+        <canvas id="chart3" width="250" height="250"></canvas>
+        <canvas id="chart4" width="250" height="250"></canvas>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Answers</th>
+                <th>Expected Answer</th>
+                <th>Cosine Similarity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Row 1, Col 1</td>
+                <td>Row 1, Col 2</td>
+                <td>Row 1, Col 3</td>
+            </tr>
+            <tr>
+                <td>Row 2, Col 1</td>
+                <td>Row 2, Col 2</td>
+                <td>Row 2, Col 3</td>
+            </tr>
+            <tr>
+                <td>Row 3, Col 1</td>
+                <td>Row 3, Col 2</td>
+                <td>Row 3, Col 3</td>
+            </tr>
+            <tr>
+                <td>Row 4, Col 1</td>
+                <td>Row 4, Col 2</td>
+                <td>Row 4, Col 3</td>
+            </tr>
+            <tr>
+                <td>Row 5, Col 1</td>
+                <td>Row 5, Col 2</td>
+                <td>Row 5, Col 3</td>
+            </tr>
+            <tr>
+                <td>Row 6, Col 1</td>
+                <td>Row 6, Col 2</td>
+                <td>Row 6, Col 3</td>
+            </tr>
+            <tr>
+                <td>Row 7, Col 1</td>
+                <td>Row 7, Col 2</td>
+                <td>Row 7, Col 3</td>
+            </tr>
+            <tr>
+                <td>Row 8, Col 1</td>
+                <td>Row 8, Col 2</td>
+                <td>Row 8, Col 3</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        // Data for the pie charts
+        const data1 = {
+            labels: ['Red', 'Blue', 'Yellow'],
+            datasets: [{
+                data: [30, 20, 50],
+                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56'],
+                hoverBackgroundColor: ['#ff6384', '#36a2eb', '#ffce56']
+            }]
+        };
+
+        const data2 = {
+            labels: ['A', 'B', 'C'],
+            datasets: [{
+                data: [40, 30, 30],
+                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56'],
+                hoverBackgroundColor: ['#ff6384', '#36a2eb', '#ffce56']
+            }]
+        };
+
+        // Data for the bar chart
+        const data3 = {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                data: [65, 59, 80, 81, 56]
+            }]
+        };
+
+        // Data for the line chart
+        const data4 = {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [{
+                label: 'Data',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                fill: false,
+                data: [20, 25, 40, 35, 50]
+            }]
+        };
+
+        // Get the canvas elements
+        const ctx1 = document.getElementById('chart1').getContext('2d');
+        const ctx2 = document.getElementById('chart2').getContext('2d');
+        const ctx3 = document.getElementById('chart3').getContext('2d');
+        const ctx4 = document.getElementById('chart4').getContext('2d');
+
+        // Draw the pie charts
+        new Chart(ctx1, {
+            type: 'pie',
+            data: data1,
+            options: {
+                responsive: false,
+                maintainAspectRatio: false
+            }
+        });
+
+        new Chart(ctx2, {
+            type: 'pie',
+            data: data2,
+            options: {
+                responsive: false,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Draw the bar chart
+        new Chart(ctx3, {
+            type: 'bar',
+            data: data3,
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        // Draw the line chart
+        new Chart(ctx4, {
+            type: 'line',
+            data: data4,
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+</html>

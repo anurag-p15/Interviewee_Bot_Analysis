@@ -15,6 +15,7 @@ import speech_recognition as sr
 from deepface import DeepFace
 from django.views.decorators.http import require_POST
 from django.contrib.auth import logout as django_logout
+import webbrowser
 
 
 
@@ -29,6 +30,7 @@ class VideoAnalyzer:
         self.expected_answers = []
         self.resolution = (1300, 1300)
         self.audio_thread=None
+        self.web_page_opened = False
 
     def set_resolution(self, resolution):
         self.resolution = resolution
@@ -258,16 +260,26 @@ class VideoAnalyzer:
         
         
     def print_results(self):
-        print("Interview Analysis Results:")
-        for idx, result in enumerate(self.latest_analysis_results, start=1):
-            print(f"Result {idx}: {result}")
-    
-        print("Questions Asked and Answers:")
+        results = []
         for idx, (question, user_answer, expected_answer) in enumerate(zip(self.questions, self.user_answers, self.expected_answers), start=1):
-            print(f"Question {idx}:")
-            print(f"Question: {question}")
-            print(f"User's Answer: {user_answer}")
-            print(f"Expected Answer: {expected_answer}")
+            result = {
+                "index": idx,
+                "question": question,
+                "user_answer": user_answer,
+                "expected_answer": expected_answer
+            }
+            results.append(result)
+        
+        # After collecting all results, attempt to open the web browser
+        if not self.web_page_opened:
+            try:
+                webbrowser.open('http://localhost:8000/user_session/resultpie')
+                self.web_page_opened = True
+            except webbrowser.Error as e:
+                print(f"Failed to open web page: {e}")
+        
+        return results
+
 
 
     def get_average_emotion(self):
@@ -299,6 +311,9 @@ class VideoAnalyzer:
 # Initialize the VideoAnalyzer
 video_analyzer = VideoAnalyzer()
 
+def result_pie_view(request):
+    analysis_results = video_analyzer.print_results()
+    return render(request, 'resultpie.html', {'analysis_results': analysis_results})
 
 
 
