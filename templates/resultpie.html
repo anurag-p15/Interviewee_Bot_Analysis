@@ -30,9 +30,7 @@
         }
 
         #charts-container {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Align items to the start of the container */
+            width:100%
             gap: 10px; /* Reduced gap between charts */
             margin: 0; /* Remove all margins */
             padding-left: 10px; /* Add padding to the left */
@@ -40,6 +38,7 @@
         }
 
         canvas {
+            width:100%; 
             border: 1px solid #ddd;
             border-radius: 5px;
         }
@@ -66,10 +65,6 @@
             box-shadow: 0px 20px 6px rgba(0, 0, 0, 0.25);
             overflow-x: auto; /* Add horizontal overflow if needed */
             margin-bottom: 5%;
-        }
-        #chart1,#chart3{
-            width:300px;
-            height:100px;
         }
     </style>
 </head>
@@ -111,12 +106,15 @@
 
     <div id="header"><h1>Results Generated for Your Interview !!</h1></div>
     <div id="charts-container" style="margin-bottom: 2%">
-        <canvas id="chart1" ></canvas>
-        <canvas id="chart3"></canvas>
+        <div class="row">
+            <div class="col-md-6"><canvas id="chart1" style="height: 300px;"></canvas></div>
+            <div class="col-md-6"><canvas id="chart3" style="height: 300px;"></canvas></div>
+        <div class="row">
     </div>
 
-    <h3>Questions and Answers</h3>
-    <table style="margin-bottom: 5%">
+    <div style="margin-top:5%">
+    <h3 style="text-align:center">Questions and Answers</h3>
+    <table style="margin: 5%">
         <tr>
             <th>Index</th>
             <th>Question</th>
@@ -132,6 +130,7 @@
         </tr>
         {% endfor %}
     </table>
+</div>
 
     
 
@@ -178,6 +177,8 @@
             data: data1,
             options: {
                 responsive: true,
+                maintainAspectRatio: false, // Ensure the chart maintains its aspect ratio
+                //aspectRatio: 1, // Set a consistent aspect ratio
                 legend: {
                     position: 'top',
                 },
@@ -193,7 +194,8 @@
             data: data3,
             options: {
                 responsive: false,
-                maintainAspectRatio: false,
+                maintainAspectRatio: false, // Ensure the chart maintains its aspect ratio
+                //aspectRatio: 1, // Set a consistent aspect ratio
                 scales: {
                     yAxes: [{
                         ticks: {
