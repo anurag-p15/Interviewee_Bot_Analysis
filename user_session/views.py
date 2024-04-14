@@ -30,7 +30,6 @@ class VideoAnalyzer:
         self.expected_answers = []
         self.resolution = (1300, 1300)
         self.audio_thread=None
-        self.web_page_opened = False
 
     def set_resolution(self, resolution):
         self.resolution = resolution
@@ -124,7 +123,7 @@ class VideoAnalyzer:
             print("No questions available for analysis.")
             return
         
-        
+        self.web_page_opened = False
         self.questions.clear()
         self.user_answers.clear()
         self.expected_answers.clear()
@@ -133,7 +132,7 @@ class VideoAnalyzer:
         self.video_capture = cv2.VideoCapture(0)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[0])
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
-        counter=0
+        counter=1
         question=random.choice(questions)
         question_text = question['Question']
         self.questions.append(question['Question'])
@@ -141,6 +140,7 @@ class VideoAnalyzer:
         self.expected_answers.append(expected_answer)
         self.audio_thread=Thread(target=self.analyze_audio)
         self.audio_thread.start()
+        
         
         # Initialize a list to store user answers
         user_answers = []
@@ -212,11 +212,13 @@ class VideoAnalyzer:
                 elif key == ord('e'):  # End analysis if 'e' key is pressed
                     self.recording = False
                     break
-                elif (counter >= num_questions_to_show):
+                elif (counter > num_questions_to_show):
                     self.recording = False
                     break
                 elif (key == ord('n') and counter < num_questions_to_show):
                     counter += 1
+                    if (counter > num_questions_to_show):
+                        self.recording = False
                     question = random.choice(questions)
                     question_text = question['Question']
                     self.questions.append(question_text)
@@ -261,6 +263,11 @@ class VideoAnalyzer:
         
     def print_results(self):
         results = []
+        #username
+        #domain
+        #num questions
+        #time
+        #video vala ka result
         for idx, (question, user_answer, expected_answer) in enumerate(zip(self.questions, self.user_answers, self.expected_answers), start=1):
             result = {
                 "index": idx,
