@@ -320,8 +320,17 @@ video_analyzer = VideoAnalyzer()
 
 def result_pie_view(request):
     analysis_results = video_analyzer.print_results()
-    return render(request, 'resultpie.html', {'analysis_results': analysis_results})
-
+    # Assuming video_analyzer.get_average_emotion() returns a dictionary of emotion scores
+    average_emotion = video_analyzer.get_average_emotion()
+    # Convert the average emotion dictionary to a format suitable for the pie chart
+    emotion_data = {
+        'labels': list(average_emotion.keys()),
+        'data': list(average_emotion.values())
+    }
+    return render(request, 'resultpie.html', {
+        'analysis_results': analysis_results,
+        'emotion_data': emotion_data # Pass the emotion data to the template
+    })
 
 
 #User Session

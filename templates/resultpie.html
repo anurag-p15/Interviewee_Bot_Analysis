@@ -103,10 +103,15 @@
             </section>
         </nav>
     </div>
+    
 
+    <div id="header"><h1>Results Generated for Your Interview !!</h1></div>
+    <div id="charts-container" style="margin-bottom: 2%">
+        <canvas id="chart1" width="250" height="250"></canvas>
+    </div>
 
-    <h1>Interview Analysis Results</h1>
-    <table>
+    <h3>Questions and Answers</h3>
+    <table style="margin-bottom: 5%">
         <tr>
             <th>Index</th>
             <th>Question</th>
@@ -122,65 +127,8 @@
         </tr>
         {% endfor %}
     </table>
-    <div id="header">Final Confidence Score: 88.8%</div>
-    <div id="charts-container">
-        <canvas id="chart1" width="250" height="250"></canvas>
-        <canvas id="chart2" width="250" height="250"></canvas>
-        <canvas id="chart3" width="250" height="250"></canvas>
-        <canvas id="chart4" width="250" height="250"></canvas>
-    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Answers</th>
-                <th>Expected Answer</th>
-                <th>Cosine Similarity</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Row 1, Col 1</td>
-                <td>Row 1, Col 2</td>
-                <td>Row 1, Col 3</td>
-            </tr>
-            <tr>
-                <td>Row 2, Col 1</td>
-                <td>Row 2, Col 2</td>
-                <td>Row 2, Col 3</td>
-            </tr>
-            <tr>
-                <td>Row 3, Col 1</td>
-                <td>Row 3, Col 2</td>
-                <td>Row 3, Col 3</td>
-            </tr>
-            <tr>
-                <td>Row 4, Col 1</td>
-                <td>Row 4, Col 2</td>
-                <td>Row 4, Col 3</td>
-            </tr>
-            <tr>
-                <td>Row 5, Col 1</td>
-                <td>Row 5, Col 2</td>
-                <td>Row 5, Col 3</td>
-            </tr>
-            <tr>
-                <td>Row 6, Col 1</td>
-                <td>Row 6, Col 2</td>
-                <td>Row 6, Col 3</td>
-            </tr>
-            <tr>
-                <td>Row 7, Col 1</td>
-                <td>Row 7, Col 2</td>
-                <td>Row 7, Col 3</td>
-            </tr>
-            <tr>
-                <td>Row 8, Col 1</td>
-                <td>Row 8, Col 2</td>
-                <td>Row 8, Col 3</td>
-            </tr>
-        </tbody>
-    </table>
+    
 
     <div class="footer">
         <img  class="footer-logo" src="{% static 'photos/logo.png' %}" alt="logo" />
@@ -188,104 +136,34 @@
     </div>
 
     <script>
+        // Assuming emotion_data is passed from the Django view as a JSON object
+        const emotionData = {{ emotion_data|safe }};
+    
         // Data for the pie charts
         const data1 = {
-            labels: ['Red', 'Blue', 'Yellow'],
+            labels: emotionData.labels,
             datasets: [{
-                data: [30, 20, 50],
-                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56'],
-                hoverBackgroundColor: ['#ff6384', '#36a2eb', '#ffce56']
+                data: emotionData.data,
+                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#f44336'],
+                hoverBackgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#f44336']
             }]
         };
-
-        const data2 = {
-            labels: ['A', 'B', 'C'],
-            datasets: [{
-                data: [40, 30, 30],
-                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56'],
-                hoverBackgroundColor: ['#ff6384', '#36a2eb', '#ffce56']
-            }]
-        };
-
-        // Data for the bar chart
-        const data3 = {
-            labels: ['January', 'February', 'March', 'April', 'May'],
-            datasets: [{
-                label: 'Sales',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                data: [65, 59, 80, 81, 56]
-            }]
-        };
-
-        // Data for the line chart
-        const data4 = {
-            labels: ['January', 'February', 'March', 'April', 'May'],
-            datasets: [{
-                label: 'Data',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2,
-                fill: false,
-                data: [20, 25, 40, 35, 50]
-            }]
-        };
-
-        // Get the canvas elements
-        const ctx1 = document.getElementById('chart1').getContext('2d');
-        const ctx2 = document.getElementById('chart2').getContext('2d');
-        const ctx3 = document.getElementById('chart3').getContext('2d');
-        const ctx4 = document.getElementById('chart4').getContext('2d');
-
-        // Draw the pie charts
-        new Chart(ctx1, {
+    
+        // Get the canvas element
+        const ctx = document.getElementById('chart1').getContext('2d');
+    
+        // Create the pie chart
+        new Chart(ctx, {
             type: 'pie',
             data: data1,
             options: {
-                responsive: false,
-                maintainAspectRatio: false
-            }
-        });
-
-        new Chart(ctx2, {
-            type: 'pie',
-            data: data2,
-            options: {
-                responsive: false,
-                maintainAspectRatio: false
-            }
-        });
-
-        // Draw the bar chart
-        new Chart(ctx3, {
-            type: 'bar',
-            data: data3,
-            options: {
-                responsive: false,
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-        });
-
-        // Draw the line chart
-        new Chart(ctx4, {
-            type: 'line',
-            data: data4,
-            options: {
-                responsive: false,
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
                 }
             }
         });
