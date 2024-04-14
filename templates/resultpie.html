@@ -67,6 +67,10 @@
             overflow-x: auto; /* Add horizontal overflow if needed */
             margin-bottom: 5%;
         }
+        #chart1,#chart3{
+            width:300px;
+            height:100px;
+        }
     </style>
 </head>
 <body>
@@ -107,7 +111,8 @@
 
     <div id="header"><h1>Results Generated for Your Interview !!</h1></div>
     <div id="charts-container" style="margin-bottom: 2%">
-        <canvas id="chart1" width="250" height="250"></canvas>
+        <canvas id="chart1" ></canvas>
+        <canvas id="chart3"></canvas>
     </div>
 
     <h3>Questions and Answers</h3>
@@ -148,9 +153,24 @@
                 hoverBackgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40', '#f44336']
             }]
         };
+        const barChartData = {{ bar_chart_data|safe }};
+
+    const data3 = {
+        labels: barChartData.labels,
+        datasets: [{
+            label: 'Cosine Similarity',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            data: barChartData.data
+        }]
+    };
+
+        
     
         // Get the canvas element
         const ctx = document.getElementById('chart1').getContext('2d');
+        const ctx3 = document.getElementById('chart3').getContext('2d');
     
         // Create the pie chart
         new Chart(ctx, {
@@ -164,6 +184,22 @@
                 animation: {
                     animateScale: true,
                     animateRotate: true
+                }
+            }
+        });
+
+        new Chart(ctx3, {
+            type: 'bar',
+            data: data3,
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
                 }
             }
         });

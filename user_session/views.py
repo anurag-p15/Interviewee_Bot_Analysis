@@ -16,7 +16,8 @@ from deepface import DeepFace
 from django.views.decorators.http import require_POST
 from django.contrib.auth import logout as django_logout
 import webbrowser
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 #Camera views
@@ -320,17 +321,34 @@ video_analyzer = VideoAnalyzer()
 
 def result_pie_view(request):
     analysis_results = video_analyzer.print_results()
-    # Assuming video_analyzer.get_average_emotion() returns a dictionary of emotion scores
     average_emotion = video_analyzer.get_average_emotion()
-    # Convert the average emotion dictionary to a format suitable for the pie chart
     emotion_data = {
         'labels': list(average_emotion.keys()),
         'data': list(average_emotion.values())
     }
+    
+    # Calculate cosine similarity for each pair of user's answer and expected answer
+    similarity_scores = []
+    for user_answer, expected_answer in zip(video_analyzer.user_answers, video_analyzer.expected_answers):
+        similarity = calculate_cosine_similarity(user_answer, expected_answer)
+        similarity_scores.append(similarity)
+    
+    bar_chart_data = {
+        'labels': [f"Question {i+1}" for i in range(len(similarity_scores))],
+        'data': similarity_scores
+    }
+    
     return render(request, 'resultpie.html', {
         'analysis_results': analysis_results,
-        'emotion_data': emotion_data # Pass the emotion data to the template
+        'emotion_data': emotion_data,
+       'bar_chart_data': bar_chart_data # Pass the bar chart data to the template # Pass the similarity scores to the template
     })
+
+def calculate_cosine_similarity(text1, text2):
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform([text1, text2])
+    similarity = cosine_similarity(vectors)
+    return similarity[0][1]
 
 
 #User Session
