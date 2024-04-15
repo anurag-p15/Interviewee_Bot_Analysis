@@ -1,4 +1,5 @@
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,29 +84,46 @@
 
 <!--Tabke showing all details-->
  <div>
-    <table style="color: white; border: 2px solid white;">
-        <thead>
-            <tr style="border: 2px solid white;">
-                <th style="border: 2px solid white;">Interview Domain</th>
-                <th>No.of Questions</th>
-                <th style="border: 2px solid white;">Time</th>
-                <th style="border: 2px solid white;">Review your Analysis</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Loop through the filtered data -->
-            <!-- Replace `filteredData` with your actual data variable -->
-            <!-- Replace `item.category`, `item.score`, and `item.username` with the actual fields in your data -->
-            <!-- Use appropriate styling and structure for your table rows and cells -->
-            <!-- Adjust the `key` attribute if necessary -->
-            <tr style="border: 2px solid white;">
-                <td style="border: 2px solid white;">Domain Name</td>
-                <td>No.of Questions</td>
-                <td style="border: 2px solid white;">Time</td>
-                <td style="border: 2px solid white;">Link</td>
-            </tr>
-        </tbody>
+        <table style="color: white; border: 2px solid white;">
+            <!-- Table headers -->
+            <thead>
+                <!-- Header row -->
+                <tr style="border: 2px solid white;">
+                    <th>Username</th>
+                    <th style="border: 2px solid white;">Interview Domain</th>
+                    <th>No. of Questions</th>
+                    <th style="border: 2px solid white;">Completion Time</th>
+                    <th style="border: 2px solid white;">View Results</th> <!-- Modified to include View Results -->
+                </tr>
+            </thead>
+            <!-- Table body -->
+            <tbody>
+                <!-- Loop through past interviews -->
+                {% for interview in past_interviews %}
+                <tr style="border: 2px solid white;">
+                    <!-- Display interview details -->
+                    <td>{{ interview.username }}</td>
+                    <td style="border: 2px solid white;">{{ interview.domain }}</td>
+                    <td>{{ interview.num_questions }}</td>
+                    <td style="border: 2px solid white;">{{ interview.completion_time }}</td>
+                    <!-- Include form for viewing results -->
+                    <td style="border: 2px solid white;">
+                        <form action="{% url 'user_session:view_past_attempt_results' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="username" value="{{ interview.username }}">
+                            <input type="hidden" name="domain" value="{{ interview.domain }}">
+                            <button type="submit" class="btn btn-link" style="color:white">View Interview Details</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     </table>
+</div>
+{% endblock %}
+
  </div>
 
 

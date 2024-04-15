@@ -436,13 +436,41 @@ def logout_view(request):
 
 def past_interviews(request):
     user_data = request.session.get('user')
-    print(user_data)
     if user_data:
-        return render(request,'past_interviews.html')
+        # Fetch past interview data for the logged-in user
+        past_interviews = InterviewResult.objects.filter(username=user_data['username'])
+        # Pass the past interviews data to the template context
+        context = {
+            'past_interviews': past_interviews
+        }
+        return render(request, 'past_interviews.html', context)
     else:
         # Redirect to login page if user not logged in
         messages.error(request, 'Please login to access the dashboard.')
         return redirect('user_session:login')
+
+
+def view_past_attempt_results(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        domain = request.POST.get('domain')
+        try:
+            interview_result = InterviewResult.objects.get(username=username, domain=domain)
+            emotion_data = interview_result.emotion_data
+            bar_chart_data = interview_result.bar_chart_data
+            
+            return render(request, 'past_attempts.html', {
+                'interview_result': interview_result,
+                'emotion_data': emotion_data,
+                'bar_chart_data': bar_chart_data
+            })      
+        except InterviewResult.DoesNotExist:
+            # Handle case where interview result does not exist
+            pass
+    # Handle other HTTP methods or form submission failure
+    return render(request, 'error_page.html', {'message': 'Failed to fetch interview details'})
+
+
 
 # Views
 @csrf_exempt

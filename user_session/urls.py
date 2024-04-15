@@ -13,6 +13,7 @@ urlpatterns = [
     path('check_login_status/', views.check_login_status, name='check_login_status'),
     path('clear_analysis_results/', views.clear_analysis_results, name='clear_analysis_results'),
     path('result_pie/<str:username>/<str:domain>/', views.result_pie_view, name='result_pie'),
+    path('view_past_attempt_results',views.view_past_attempt_results, name='view_past_attempt_results'),
 ]
 
 
