@@ -1,5 +1,6 @@
 import threading
 from django.http import HttpResponse,JsonResponse
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password,check_password
@@ -18,6 +19,9 @@ from django.contrib.auth import logout as django_logout
 import webbrowser
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from django.shortcuts import render
+from .models import InterviewResult
+
 
 
 #Camera views
@@ -31,6 +35,7 @@ class VideoAnalyzer:
         self.expected_answers = []
         self.resolution = (1300, 1300)
         self.audio_thread=None
+        self.web_page_opened=False
 
     def set_resolution(self, resolution):
         self.resolution = resolution
@@ -57,7 +62,7 @@ class VideoAnalyzer:
         return filtered_questions 
     
     
-    def start_analysis(self, domain,num_questions_to_show):
+    def start_analysis(self, domain, num_questions_to_show, username):
         print("Starting analysis for domain:", domain)  # Debug statement
         self.recording = True
         self.questions = []
@@ -65,7 +70,8 @@ class VideoAnalyzer:
         self.expected_answers = []
         self.questions = self.load_questions_from_csv('questions_dataset.csv')
         filtered_questions = self.filter_questions_by_domain(domain)
-        threading.Thread(target=self.analyze_video, args=(filtered_questions, num_questions_to_show)).start()
+        threading.Thread(target=self.analyze_video, args=(filtered_questions, domain,num_questions_to_show, username)).start()
+
 
 
     def analyze_frame(self, frame):
@@ -119,7 +125,7 @@ class VideoAnalyzer:
         return sentence
     
     
-    def analyze_video(self,questions,num_questions_to_show): 
+    def analyze_video(self,questions,domain,num_questions_to_show,username): 
         if not questions:
             print("No questions available for analysis.")
             return
@@ -166,6 +172,8 @@ class VideoAnalyzer:
                 # Calculate the position for the rectangle background
                 background_position = (bottom_center[0] - text_size[0] // 2 - 5, bottom_center[1] - text_size[1] + 5)
                 background_size = (text_size[0] + 10, text_size[1] + 10)
+                button_margin = 10
+                button_width = 150
 
                 # Draw the white rectangle background
 
@@ -175,6 +183,9 @@ class VideoAnalyzer:
 
                  # Calculate text size
                 text_size = cv2.getTextSize(str(question), font, font_scale, font_thickness)[0]
+                while text_size[0] > frame.shape[1] - 2 * button_width - 4 * button_margin:
+                    font_scale -= 0.1
+                    text_size = cv2.getTextSize(question_text, font, font_scale, font_thickness)[0]
 
                 # Calculate background rectangle position and size
                 background_position = (bottom_left_corner[0], bottom_left_corner[1] - text_size[1] - 5)
@@ -239,7 +250,7 @@ class VideoAnalyzer:
                     
         self.video_capture.release()
         cv2.destroyAllWindows()
-        self.print_results()
+        self.print_results(domain,username)
         
         
         
@@ -262,7 +273,7 @@ class VideoAnalyzer:
 
         
         
-    def print_results(self):
+    def print_results(self,domain, username):
         results = []
         #username
         #domain
@@ -281,11 +292,12 @@ class VideoAnalyzer:
         # After collecting all results, attempt to open the web browser
         if not self.web_page_opened:
             try:
-                webbrowser.open('http://localhost:8000/user_session/resultpie')
+                result_pie_url = f"http://localhost:8000/user_session/result_pie/{username}/{domain}/"
+                webbrowser.open(result_pie_url)
                 self.web_page_opened = True
-            except webbrowser.Error as e:
-                print(f"Failed to open web page: {e}")
-        
+            except Exception as e:
+                print(f"Failed to redirect to result_pie view: {e}")
+
         return results
 
 
@@ -294,55 +306,39 @@ class VideoAnalyzer:
         if not self.latest_analysis_results:
             return None
 
-        # Calculate the average emotion scores
+    # Initialize average emotion dictionary with initial values
         average_emotion = {
-            'angry': 0,
-            'disgust': 0,
-            'fear': 0,
-            'happy': 0,
-            'sad': 0,
-            'surprise': 0,
-            'neutral': 0
+        'angry': 0,
+        'disgust': 0,
+        'fear': 0,
+        'happy': 0,
+        'sad': 0,
+        'surprise': 0,
+        'neutral': 0
         }
 
-        for result in self.latest_analysis_results:
-            emotions = result[0]['emotion']
-            for emotion in emotions:
-                average_emotion[emotion] += emotions[emotion]
-
         num_results = len(self.latest_analysis_results)
-        for emotion in average_emotion:
-            average_emotion[emotion] /= num_results
+
+        for result in self.latest_analysis_results:
+            try:
+                if 'emotion' in result[0]:  # Check if 'emotion' key exists in the result
+                    emotions = result[0]['emotion']
+                    for emotion in emotions:
+                        average_emotion[emotion] += emotions[emotion]
+            except KeyError:
+                print("Face not detected")
+
+    # Calculate average emotion scores
+        if num_results > 0:
+            for emotion in average_emotion:
+                average_emotion[emotion] /= num_results
 
         return average_emotion
+
 
 # Initialize the VideoAnalyzer
 video_analyzer = VideoAnalyzer()
 
-def result_pie_view(request):
-    analysis_results = video_analyzer.print_results()
-    average_emotion = video_analyzer.get_average_emotion()
-    emotion_data = {
-        'labels': list(average_emotion.keys()),
-        'data': list(average_emotion.values())
-    }
-    
-    # Calculate cosine similarity for each pair of user's answer and expected answer
-    similarity_scores = []
-    for user_answer, expected_answer in zip(video_analyzer.user_answers, video_analyzer.expected_answers):
-        similarity = calculate_cosine_similarity(user_answer, expected_answer)
-        similarity_scores.append(similarity)
-    
-    bar_chart_data = {
-        'labels': [f"Question {i+1}" for i in range(len(similarity_scores))],
-        'data': similarity_scores
-    }
-    
-    return render(request, 'resultpie.html', {
-        'analysis_results': analysis_results,
-        'emotion_data': emotion_data,
-       'bar_chart_data': bar_chart_data # Pass the bar chart data to the template # Pass the similarity scores to the template
-    })
 
 def calculate_cosine_similarity(text1, text2):
     vectorizer = TfidfVectorizer()
@@ -400,6 +396,7 @@ def login(request):
                 'username': user.username,
                 'bio': user.bio  # Add more fields as needed
             }
+            request.session['username'] = username  # Store the username in the session
             # Redirect to dashboard on successful login
             return redirect('user_session:dashboard')
         else:
@@ -457,9 +454,9 @@ def check_login_status(request):
         return JsonResponse({'status': 'not_logged_in'})
 
 @csrf_exempt
-@csrf_exempt
 def start_analysis_view(request):
     user_data = request.session.get('user')
+    username = user_data.get('username')
     if user_data:
         if request.method == 'POST':
             domain = request.POST.get('domain')  # Retrieve the domain from POST data
@@ -478,7 +475,8 @@ def start_analysis_view(request):
                     video_analyzer.set_resolution((800, 600))
 
                 # Start the analysis with the provided domain
-                video_analyzer.start_analysis(domain, num_questions)  # Pass the domain and num_questions_to_show
+                video_analyzer.start_analysis(domain, num_questions, username)
+ # Pass the domain and num_questions_to_show
 
                 return render(request, 'interview.html', {'message': 'Analysis started successfully'})
             else:
@@ -512,6 +510,43 @@ def check_analysis_result(request):
         return render(request, 'result.html', {'analysis_results': analysis_results, 'average_emotion': average_emotion, 'audio_sentiment': audio_sentiment})
     else:
         return JsonResponse({"html_result": "You have not logged in !! Login to Continue !!"}, safe=False)
+
+def result_pie_view(request,username,domain):
+    # Extract the username from the request if the user is authenticated
+    analysis_results = video_analyzer.print_results(domain,username)
+    average_emotion = video_analyzer.get_average_emotion()
+    emotion_data = {
+        'labels': list(average_emotion.keys()),
+        'data': list(average_emotion.values())
+    }
+    
+    similarity_scores = []
+    for user_answer, expected_answer in zip(video_analyzer.user_answers, video_analyzer.expected_answers):
+        similarity = calculate_cosine_similarity(user_answer, expected_answer)
+        similarity_scores.append(similarity)
+    
+    bar_chart_data = {
+        'labels': [f"Question {i+1}" for i in range(len(similarity_scores))],
+        'data': similarity_scores
+    }
+    
+    # Save the data to MongoDB
+    interview_result = InterviewResult(
+        username=username,  # Save the username here
+        domain=domain, # Replace with the actual domain
+        num_questions=len(video_analyzer.user_answers),
+        analysis_results=analysis_results,
+        emotion_data=emotion_data,
+        bar_chart_data=bar_chart_data
+    )
+    print("Username before saving:", username)  # Debug print
+    interview_result.save()
+    
+    return render(request, 'resultpie.html', {
+        'analysis_results': analysis_results,
+        'emotion_data': emotion_data,
+        'bar_chart_data': bar_chart_data
+    })
 
     
 @require_POST
