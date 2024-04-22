@@ -1,3 +1,4 @@
+import datetime
 import threading
 from django.http import HttpResponse,JsonResponse
 from django.urls import reverse
@@ -21,7 +22,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from django.shortcuts import render
 from .models import InterviewResult
-
+from datetime import datetime
 
 
 #Camera views
@@ -454,22 +455,29 @@ def view_past_attempt_results(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         domain = request.POST.get('domain')
+        completion_time_str = request.POST.get('completion_time')
+        num_questions=request.POST.get('num_questions')
+        # No need to parse completion_time_str since it's already in ISO8601 format
+        
         try:
-            interview_result = InterviewResult.objects.get(username=username, domain=domain)
-            emotion_data = interview_result.emotion_data
-            bar_chart_data = interview_result.bar_chart_data
+            interview_results = InterviewResult.objects.filter(username=username, domain=domain,num_questions=num_questions)
             
-            return render(request, 'past_attempts.html', {
-                'interview_result': interview_result,
-                'emotion_data': emotion_data,
-                'bar_chart_data': bar_chart_data
-            })      
+            # Iterate over each interview result
+            for interview_result in interview_results:
+                emotion_data = interview_result.emotion_data
+                bar_chart_data = interview_result.bar_chart_data
+                date = completion_time_str  # Assign the ISO8601 date string directly
+                return render(request, 'past_attempts.html', {
+                    'interview_result': interview_result,
+                    'emotion_data': emotion_data,
+                    'bar_chart_data': bar_chart_data,
+                    'date': date  # Pass completion_time_str to the template
+                })      
         except InterviewResult.DoesNotExist:
             # Handle case where interview result does not exist
             pass
     # Handle other HTTP methods or form submission failure
     return render(request, 'error_page.html', {'message': 'Failed to fetch interview details'})
-
 
 
 # Views

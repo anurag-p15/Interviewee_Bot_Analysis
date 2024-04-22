@@ -112,6 +112,8 @@
                             {% csrf_token %}
                             <input type="hidden" name="username" value="{{ interview.username }}">
                             <input type="hidden" name="domain" value="{{ interview.domain }}">
+                            <input type="hidden" name="completion_time" value="{{ interview.completion_time }}">
+                            <input type="hidden" name="num_questions" value="{{ interview.num_questions }}">
                             <button type="submit" class="btn btn-link" style="color:white">View Interview Details</button>
                         </form>
                     </td>
