@@ -140,10 +140,11 @@ class VideoAnalyzer:
         self.video_capture = cv2.VideoCapture(0)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[0])
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
-        counter=1
+        counter=0
         question=random.choice(questions)
         question_text = question['Question']
         self.questions.append(question['Question'])
+        print(self.questions)
         expected_answer = self.get_expected_answer(question_text)  # Pass question text as argument
         self.expected_answers.append(expected_answer)
         self.audio_thread=Thread(target=self.analyze_audio)
@@ -220,7 +221,7 @@ class VideoAnalyzer:
                 cv2.imshow('Video Feed', frame)
                 key = cv2.waitKey(5)
 
-                if key == ord('q'):  # Quit if 'q' key is pressed
+                if key == ord('q'):  # Quit if 'q' key is pressedr
                     break
                 elif key == ord('e'):  # End analysis if 'e' key is pressed
                     self.recording = False
@@ -570,7 +571,7 @@ def result_pie_view(request,username,domain):
     interview_result = InterviewResult(
         username=username,  # Save the username here
         domain=domain, # Replace with the actual domain
-        num_questions=len(video_analyzer.user_answers),
+        num_questions=len(video_analyzer.questions),
         analysis_results=analysis_results,
         emotion_data=emotion_data,
         bar_chart_data=bar_chart_data
