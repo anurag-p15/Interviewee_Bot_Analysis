@@ -493,43 +493,50 @@ def check_login_status(request):
 
 @csrf_exempt
 def start_analysis_view(request):
-    user_data = request.session.get('user')
-    username = user_data.get('username')
-    if user_data:
-        if request.method == 'POST':
-            domain = request.POST.get('domain')  # Retrieve the domain from POST data
-            num_questions = int(request.POST.get('numQuestions'))
+    try:
+        user_data = request.session.get('user')
+        if user_data:
+            username = user_data.get('username')
+            if request.method == 'POST':
+                domain = request.POST.get('domain')  # Retrieve the domain from POST data
+                num_questions = request.POST.get('numQuestions')
 
-            # Check if the selected domain is not null
-            if domain != 'null' and num_questions > 0:
-                # Set the resolution based on domain
-                if domain == 'engineering':
-                    video_analyzer.set_resolution((1920, 1080))
-                elif domain == 'bba':
-                    video_analyzer.set_resolution((1280, 720))
-                elif domain == 'finance':
-                    video_analyzer.set_resolution((640, 480))
-                elif domain == 'management':
-                    video_analyzer.set_resolution((800, 600))
+                # Check if both domain and num_questions are provided
+                if domain and num_questions:
+                    num_questions = int(num_questions)
 
-                # Start the analysis with the provided domain
-                video_analyzer.start_analysis(domain, num_questions, username)
- # Pass the domain and num_questions_to_show
+                    # Check if the selected domain is not null
+                    if domain != 'null' and num_questions > 0:
+                        # Set the resolution based on domain
+                        if domain == 'engineering':
+                            video_analyzer.set_resolution((1920, 1080))
+                        elif domain == 'bba':
+                            video_analyzer.set_resolution((1280, 720))
+                        elif domain == 'finance':
+                            video_analyzer.set_resolution((640, 480))
+                        elif domain == 'management':
+                            video_analyzer.set_resolution((800, 600))
 
-                return render(request, 'interview.html', {'message': 'Analysis started successfully'})
+                        # Start the analysis with the provided domain
+                        video_analyzer.start_analysis(domain, num_questions, username)
+
+                        return render(request, 'interview.html', {'message': 'Analysis started successfully'})
+                    else:
+                        # If domain is null or number of questions is 0, show an error message
+                        return render(request, 'interview.html', {'error_message': 'Please select a proper domain and specify the number of questions.'})
+                else:
+                    # If either domain or number of questions is not provided, show an error message
+                    return render(request, 'interview.html', {'error_message': 'Please select both a domain and specify the number of questions.'})
             else:
-                # If domain is null or number of questions is 0, show an error message
-                messages.error(request, 'Please select a domain and specify the number of questions.')
-                return render('interview.html')  # Redirect to dashboard or wherever appropriate
+                # If the request method is not POST, redirect to dashboard or wherever appropriate
+                return render(request, 'interview.html', {'error_message': 'Invalid request method.'})
         else:
-            # If the request method is not POST, redirect to dashboard or wherever appropriate
-            messages.error(request, 'Invalid request method.')
-            return redirect('user_session:start_analysis')  # Redirect to dashboard or wherever appropriate
-    else:
-        # If user is not logged in, redirect to login page
-        messages.error(request, 'Please login to access the analysis feature.')
-        return redirect('user_session:login')
-    
+            # If user is not logged in, redirect to login page
+            return redirect('user_session:login')
+    except Exception as e:
+        # Log or handle the exception appropriately
+        return render(request, 'interview.html', {'error_message': 'An error occurred: {}'.format(str(e))})
+        
 @csrf_exempt
 def check_analysis_result(request):
     # Wait until the analysis is complete
