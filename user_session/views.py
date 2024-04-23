@@ -352,6 +352,7 @@ def calculate_cosine_similarity(text1, text2):
 #User Session
 def register(request):
     if request.method == 'POST':
+        name=request.POST.get('name')
         username = request.POST.get('username')
         email = request.POST.get('username')  # Assuming 'username' is actually 'email'
         password = request.POST.get('password')
@@ -365,7 +366,7 @@ def register(request):
                 error_message = 'Email already exists'
                 return render(request, 'register.html', {'error': error_message})
 
-            user = User(username=username, password=hashed_password, bio=bio)
+            user = User(username=username, password=hashed_password, bio=bio,name=name)
             user.save()
 
             # Redirect to a success page or any other desired action
